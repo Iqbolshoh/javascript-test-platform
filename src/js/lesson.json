@@ -1,23 +1,86 @@
 [
   {
-    "quiz": "html nima?",
-    "option-1": "HyperText Markup Language",
-    "option-2": "JavaScript",
-    "option-3": "Cascading Style Sheets",
-    "option-4": "PHP"
+    "quiz": "Which HTML tag is used for the largest heading?",
+    "option-1": "<h1>",
+    "option-2": "<h6>",
+    "option-3": "<heading>",
+    "option-4": "<head>"
   },
   {
-    "quiz": "<h1> tegi nima?",
-    "option-1": "Bosh sahifa nomi",
-    "option-2": "Katta sarlavha",
-    "option-3": "Kichik sarlavha",
-    "option-4": "Paragraf"
+    "quiz": "Which HTML element is used to create a paragraph?",
+    "option-1": "<p>",
+    "option-2": "<h1>",
+    "option-3": "<span>",
+    "option-4": "<div>"
   },
   {
-    "quiz": "<br> tegi nima?",
-    "option-1": "Yangi qator boshlash",
-    "option-2": "Sarlavha qo'yish",
-    "option-3": "Aloqa tegi",
-    "option-4": "Rasm qo'yish"
+    "quiz": "What is the correct HTML tag for inserting an image?",
+    "option-1": "<img>",
+    "option-2": "<image>",
+    "option-3": "<picture>",
+    "option-4": "<photo>"
+  },
+  {
+    "quiz": "Which CSS property controls the text size?",
+    "option-1": "font-size",
+    "option-2": "text-style",
+    "option-3": "text-size",
+    "option-4": "font-style"
+  },
+  {
+    "quiz": "How do you insert a comment in a CSS file?",
+    "option-1": "/* this is a comment */",
+    "option-2": "// this is a comment",
+    "option-3": "<!-- this is a comment -->",
+    "option-4": "** this is a comment **"
+  },
+  {
+    "quiz": "Which property is used to change the background color?",
+    "option-1": "background-color",
+    "option-2": "color",
+    "option-3": "bgcolor",
+    "option-4": "background"
+  },
+  {
+    "quiz": "How do you make text bold in CSS?",
+    "option-1": "font-weight: bold;",
+    "option-2": "text-style: bold;",
+    "option-3": "font: bold;",
+    "option-4": "bold: text;"
+  },
+  {
+    "quiz": "Which tag is used to create a link in HTML?",
+    "option-1": "<a>",
+    "option-2": "<link>",
+    "option-3": "<href>",
+    "option-4": "<url>"
+  },
+  {
+    "quiz": "Which attribute specifies the URL of the image in HTML?",
+    "option-1": "src",
+    "option-2": "href",
+    "option-3": "alt",
+    "option-4": "link"
+  },
+  {
+    "quiz": "Which HTML element is used for a table?",
+    "option-1": "<table>",
+    "option-2": "<tab>",
+    "option-3": "<tbl>",
+    "option-4": "<td>"
+  },
+  {
+    "quiz": "What is the correct HTML for creating a checkbox?",
+    "option-1": "<input type=\"checkbox\">",
+    "option-2": "<checkbox>",
+    "option-3": "<input checkbox>",
+    "option-4": "<check>"
+  },
+  {
+    "quiz": "Which property is used to align text to the center in CSS?",
+    "option-1": "text-align: center;",
+    "option-2": "align: center;",
+    "option-3": "center-text:",
+    "option-4": "text-center:"
   }
 ]

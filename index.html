@@ -4,155 +4,228 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test | By Iqbolshoh</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Quiz Game | By Iqbolshoh</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+        integrity="sha512-...">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-..." crossorigin="anonymous">
+    <link rel="stylesheet" href="./src/css/style.css">
     <link rel="icon" href="https://iqbolshoh.uz/favicon.ico" type="image/x-icon">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11" defer></script>
-    <link rel="stylesheet" href="./src/css/style.css">
 </head>
 
 <body>
-    <div class="card d-none" id="game-card">
-        <h4 id="question-number" class="text-muted"></h4>
-        <h2 id="quiz-container">
+    <div class="card quiz-card d-none" id="game-card">
+        <h4 id="question-number" class="quiz-timer"></h4>
+        <h2 id="quiz-container" class="mb-4">
             <span id="quiz-text">🔄</span>
         </h2>
-        <p id="emoji" class="fs-1">❓</p>
-        <div id="options" class="d-grid gap-3"></div>
+        <p id="emoji" class="quiz-emoji">❓</p>
+        <div id="options" class="quiz-options"></div>
     </div>
 
     <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const gameCard = document.getElementById("game-card");
-            const quizContainer = document.getElementById("quiz-text");
-            const questionNumber = document.getElementById("question-number");
-            const optionsContainer = document.getElementById("options");
+        (function () {
+            'use strict';
 
-            let lessons = [];
-            let currentIndex = 0;
-            let mistakeCount = 0;
-            let totalScore = 0;
-            let isProcessing = false;
-            let timer;
-            let timeLeft = 15;
+            const elements = {
+                gameCard: document.getElementById('game-card'),
+                quizText: document.getElementById('quiz-text'),
+                questionNumber: document.getElementById('question-number'),
+                optionsContainer: document.getElementById('options'),
+                emoji: document.getElementById('emoji')
+            };
 
-            async function loadLessons() {
-                try {
-                    const response = await fetch('./src/js/lesson.json');
-                    lessons = await response.json();
-                    resetGame();
-                    gameCard.classList.remove("d-none");
-                    loadQuestion();
-                } catch (error) {
-                    console.error("Error:", error);
-                }
-            }
+            const state = {
+                lessons: [],
+                currentIndex: 0,
+                mistakeCount: 0,
+                totalScore: 0,
+                isProcessing: false,
+                timer: null,
+                timeLeft: 15
+            };
 
-            loadLessons();
+            const utils = {
+                escapeHTML: str => {
+                    const div = document.createElement('div');
+                    div.textContent = str;
+                    return div.innerHTML;
+                },
 
-            function loadQuestion() {
-                if (currentIndex >= lessons.length) {
-                    showResult("🎉 Great result!", `You completed all the quizzes! Total score: ${totalScore}`, "success", resetGame);
-                    return;
-                }
+                capitalize: text => text.charAt(0).toUpperCase() + text.slice(1),
 
-                const currentLesson = lessons[currentIndex];
-                const quizText = capitalize(currentLesson.quiz);
-
-                quizContainer.innerText = quizText;
-                updateTimerDisplay();
-
-                generateOptions(currentLesson);
-                startTimer();
-            }
-
-            function generateOptions(currentLesson) {
-                let options = [
-                    currentLesson["option-1"],
-                    currentLesson["option-2"],
-                    currentLesson["option-3"],
-                    currentLesson["option-4"]
-                ];
-
-                optionsContainer.innerHTML = shuffle(options).map(option =>
-                    `<button class="btn" onclick="checkAnswer(\`${option}\`, \`${currentLesson["option-1"]}\`)">${option}</button>`
-                ).join("");
-            }
-
-            window.checkAnswer = function (selected, correctAnswer) {
-                if (isProcessing) return;
-                isProcessing = true;
-
-                if (selected === correctAnswer) {
-                    totalScore += 10;
-                    clearInterval(timer);
-                    showResult("✅ Correct!", `Let's continue! Your score is: ${totalScore}`, "success", () => {
-                        currentIndex++;
-                        timeLeft = 15;
-                        isProcessing = false;
-                        loadQuestion();
-                    });
-                } else {
-                    mistakeCount++;
-                    if (mistakeCount >= 3) {
-                        clearInterval(timer);
-                        showResult("❌ You made too many mistakes!", `The game will restart. Total score: ${totalScore}`, "error", () => {
-                            isProcessing = false;
-                            resetGame();
-                        });
-                    } else {
-                        showResult("❌ Wrong!", `You have made ${mistakeCount} mistakes. The game ends after 3 mistakes! Total score: ${totalScore}`, "error", () => {
-                            isProcessing = false;
-                        });
+                shuffle: array => {
+                    for (let i = array.length - 1; i > 0; i--) {
+                        const j = Math.floor(Math.random() * (i + 1));
+                        [array[i], array[j]] = [array[j], array[i]];
                     }
+                    return array;
+                },
+
+                formatTime: seconds => {
+                    const mins = Math.floor(seconds / 60);
+                    const secs = seconds % 60;
+                    return `${mins}:${secs.toString().padStart(2, '0')}`;
                 }
             };
 
-            function resetGame() {
-                currentIndex = mistakeCount = 0;
-                totalScore = 0;
-                timeLeft = 15;
-                loadQuestion();
-            }
+            const game = {
+                async init() {
+                    try {
+                        const response = await fetch('./src/js/lesson.json');
+                        if (!response.ok) throw new Error('Failed to load questions');
 
-            function showResult(title, text, icon, callback) {
-                Swal.fire({ title, text, icon, timer: icon === "success" ? 1000 : 1500, showConfirmButton: icon !== "success", position: "top", backdrop: false }).then(callback);
-            }
+                        state.lessons = await response.json();
+                        if (!state.lessons.length) throw new Error('No questions available');
 
-            function capitalize(text) {
-                return text.charAt(0).toUpperCase() + text.slice(1);
-            }
-
-            function shuffle(array) {
-                return array.sort(() => Math.random() - 0.5);
-            }
-
-            function startTimer() {
-                clearInterval(timer);
-                timeLeft = 15;
-                updateTimerDisplay();
-
-                timer = setInterval(() => {
-                    timeLeft--;
-                    updateTimerDisplay();
-
-                    if (timeLeft <= 0) {
-                        clearInterval(timer);
-                        showResult("⏳ Time is up!", "Let's move on to the next question.", "info", () => {
-                            currentIndex++;
-                            loadQuestion();
+                        this.reset();
+                        elements.gameCard.classList.remove('d-none');
+                        this.loadQuestion();
+                    } catch (error) {
+                        console.error('Initialization error:', error);
+                        this.showResult('❌ Error', 'Failed to load questions. Please try again.', 'error', () => {
+                            window.location.reload();
                         });
                     }
-                }, 1000);
-            }
+                },
 
-            function updateTimerDisplay() {
-                const minutes = Math.floor(timeLeft / 60);
-                const seconds = timeLeft % 60;
-                questionNumber.innerText = `Time: ${minutes}:${seconds.toString().padStart(2, '0')} | Question ${currentIndex + 1} / ${lessons.length} | Score: ${totalScore}`;
-            }
-        });
+                reset() {
+                    state.currentIndex = 0;
+                    state.mistakeCount = 0;
+                    state.totalScore = 0;
+                    state.timeLeft = 15;
+                    clearInterval(state.timer);
+                },
+
+                loadQuestion() {
+                    if (state.currentIndex >= state.lessons.length) {
+                        this.showResult(
+                            '🎉 Quiz Completed!',
+                            `Your final score: ${state.totalScore}/${state.lessons.length * 10}`,
+                            'success',
+                            this.reset.bind(this)
+                        );
+                        return;
+                    }
+
+                    const current = state.lessons[state.currentIndex];
+                    elements.quizText.innerHTML = `${state.currentIndex + 1}) ${utils.capitalize(utils.escapeHTML(current.quiz))}`;
+                    this.updateTimerDisplay();
+                    this.generateOptions(current);
+                    this.startTimer();
+                },
+
+                generateOptions(lesson) {
+                    const options = [
+                        lesson['option-1'],
+                        lesson['option-2'],
+                        lesson['option-3'],
+                        lesson['option-4']
+                    ];
+
+                    elements.optionsContainer.innerHTML = utils.shuffle([...options])
+                        .map(opt => `
+                            <button class="btn btn-outline-primary quiz-option" 
+                                    onclick="game.checkAnswer('${utils.escapeHTML(opt)}', '${utils.escapeHTML(lesson['option-1'])}')">
+                                ${utils.escapeHTML(opt)}
+                            </button>
+                        `).join('');
+                },
+
+                checkAnswer(selected, correct) {
+                    if (state.isProcessing) return;
+                    state.isProcessing = true;
+
+                    if (selected === correct) {
+                        state.totalScore += 10;
+                        clearInterval(state.timer);
+                        this.showResult(
+                            '✅ Correct!',
+                            `Score: ${state.totalScore}`,
+                            'success',
+                            () => {
+                                state.currentIndex++;
+                                state.timeLeft = 15;
+                                state.isProcessing = false;
+                                this.loadQuestion();
+                            }
+                        );
+                    } else {
+                        state.mistakeCount++;
+                        if (state.mistakeCount >= 3) {
+                            clearInterval(state.timer);
+                            this.showResult(
+                                '❌ Game Over',
+                                `Too many mistakes! Final score: ${state.totalScore}`,
+                                'error',
+                                () => {
+                                    this.reset();
+                                    this.loadQuestion();
+                                }
+                            );
+                        } else {
+                            this.showResult(
+                                '❌ Wrong Answer',
+                                `Mistakes: ${state.mistakeCount}/3`,
+                                'error',
+                                () => {
+                                    state.isProcessing = false;
+                                }
+                            );
+                        }
+                    }
+                },
+
+                startTimer() {
+                    clearInterval(state.timer);
+                    state.timeLeft = 15;
+                    this.updateTimerDisplay();
+
+                    state.timer = setInterval(() => {
+                        state.timeLeft--;
+                        this.updateTimerDisplay();
+
+                        if (state.timeLeft <= 0) {
+                            clearInterval(state.timer);
+                            this.showResult(
+                                '⏳ Time Expired!',
+                                'Moving to next question...',
+                                'info',
+                                () => {
+                                    state.currentIndex++;
+                                    this.loadQuestion();
+                                }
+                            );
+                        }
+                    }, 1000);
+                },
+
+                updateTimerDisplay() {
+                    elements.questionNumber.textContent =
+                        `Time: ${utils.formatTime(state.timeLeft)} | ` +
+                        `Question ${state.currentIndex + 1}/${state.lessons.length} | ` +
+                        `Score: ${state.totalScore}`;
+                },
+
+                showResult(title, text, icon, callback) {
+                    Swal.fire({
+                        title,
+                        text,
+                        icon,
+                        timer: icon === 'success' ? 1000 : 1500,
+                        showConfirmButton: icon !== 'success',
+                        position: 'top',
+                        backdrop: false,
+                        allowOutsideClick: false
+                    }).then(callback);
+                }
+            };
+
+            window.game = game;
+
+            document.addEventListener('DOMContentLoaded', () => game.init());
+        })();
     </script>
 </body>
 
