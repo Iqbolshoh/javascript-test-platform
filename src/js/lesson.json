@@ -28,13 +28,6 @@
     "option-4": "font-style"
   },
   {
-    "quiz": "How do you insert a comment in a CSS file?",
-    "option-1": "/* this is a comment */",
-    "option-2": "// this is a comment",
-    "option-3": "<!-- this is a comment -->",
-    "option-4": "** this is a comment **"
-  },
-  {
     "quiz": "Which property is used to change the background color?",
     "option-1": "background-color",
     "option-2": "color",
@@ -68,13 +61,6 @@
     "option-2": "<tab>",
     "option-3": "<tbl>",
     "option-4": "<td>"
-  },
-  {
-    "quiz": "What is the correct HTML for creating a checkbox?",
-    "option-1": "<input type=\"checkbox\">",
-    "option-2": "<checkbox>",
-    "option-3": "<input checkbox>",
-    "option-4": "<check>"
   },
   {
     "quiz": "Which property is used to align text to the center in CSS?",
