@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test| By Iqbolshoh</title>
+    <title>Test | By Iqbolshoh</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="icon" href="https://iqbolshoh.uz/favicon.ico" type="image/x-icon">
@@ -17,8 +17,8 @@
         <h4 id="question-number" class="text-muted"></h4>
         <h2 id="quiz-container">
             <span id="quiz-text">🔄</span>
-            <i class="fa fa-volume-up speaker-icon"></i>
         </h2>
+        <p id="emoji" class="fs-1">❓</p>
         <div id="options" class="d-grid gap-3"></div>
     </div>
 
@@ -28,7 +28,6 @@
             const quizContainer = document.getElementById("quiz-text");
             const questionNumber = document.getElementById("question-number");
             const optionsContainer = document.getElementById("options");
-            const speakerIcon = document.querySelector(".speaker-icon");
 
             let lessons = [];
             let currentIndex = 0;
@@ -51,8 +50,6 @@
             }
 
             loadLessons();
-
-            speakerIcon.addEventListener("click", () => speakText(quizContainer.innerText.trim()));
 
             function loadQuestion() {
                 if (currentIndex >= lessons.length) {
@@ -83,14 +80,12 @@
                 ).join("");
             }
 
-            // Check the answer
             window.checkAnswer = function (selected, correctAnswer) {
                 if (isProcessing) return;
                 isProcessing = true;
 
                 if (selected === correctAnswer) {
                     totalScore += 10;
-                    speakText(selected);
                     clearInterval(timer);
                     showResult("✅ Correct!", `Let's continue! Your score is: ${totalScore}`, "success", () => {
                         currentIndex++;
@@ -100,14 +95,14 @@
                     });
                 } else {
                     mistakeCount++;
-                    if (mistakeCount >= 5) {
+                    if (mistakeCount >= 3) {
                         clearInterval(timer);
                         showResult("❌ You made too many mistakes!", `The game will restart. Total score: ${totalScore}`, "error", () => {
                             isProcessing = false;
                             resetGame();
                         });
                     } else {
-                        showResult("❌ Wrong!", `You have made ${mistakeCount} mistakes. The game ends after 5 mistakes! Total score: ${totalScore}`, "error", () => {
+                        showResult("❌ Wrong!", `You have made ${mistakeCount} mistakes. The game ends after 3 mistakes! Total score: ${totalScore}`, "error", () => {
                             isProcessing = false;
                         });
                     }
@@ -119,12 +114,6 @@
                 totalScore = 0;
                 timeLeft = 15;
                 loadQuestion();
-            }
-
-            function speakText(text) {
-                let speech = new SpeechSynthesisUtterance(text);
-                speech.lang = "en-US";
-                window.speechSynthesis.speak(speech);
             }
 
             function showResult(title, text, icon, callback) {
