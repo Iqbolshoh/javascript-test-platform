@@ -20,7 +20,7 @@ Featuring **AJAX-loaded dynamic questions**, **SweetAlert2 notifications**, and 
 1️⃣ Open the platform and press "Start Test".  
 2️⃣ A question will appear dynamically with 4 answer choices.  
 3️⃣ Choose the correct answer before time runs out!  
-4️⃣ 5 mistakes = Game Over 😱  
+4️⃣ 3 mistakes = Game Over 😱  
 5️⃣ Complete all questions to see your final score! 🏆  
 
 👉 Questions are loaded from `/src/json/test.json` file.
