@@ -1,0 +1,23 @@
+[
+  {
+    "quiz": "html nima?",
+    "option-1": "HyperText Markup Language",
+    "option-2": "JavaScript",
+    "option-3": "Cascading Style Sheets",
+    "option-4": "PHP"
+  },
+  {
+    "quiz": "<h1> tegi nima?",
+    "option-1": "Bosh sahifa nomi",
+    "option-2": "Katta sarlavha",
+    "option-3": "Kichik sarlavha",
+    "option-4": "Paragraf"
+  },
+  {
+    "quiz": "<br> tegi nima?",
+    "option-1": "Yangi qator boshlash",
+    "option-2": "Sarlavha qo'yish",
+    "option-3": "Aloqa tegi",
+    "option-4": "Rasm qo'yish"
+  }
+]
