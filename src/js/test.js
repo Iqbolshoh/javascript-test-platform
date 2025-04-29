@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   async function loadLessons() {
     try {
-      const response = await fetch("./src/json/test.json");
+      const response = await fetch("./src/json/data.json");
       lessons = await response.json();
       resetGame();
       gameCard.classList.remove("d-none");
@@ -110,7 +110,7 @@ document.addEventListener("DOMContentLoaded", () => {
           }
         });
       } else {
-        showResult("Incorrect!", ``, "error", () => {
+        showResult("Incorrect!", "", "error", () => {
           isProcessing = false;
         });
       }
