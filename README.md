@@ -5,7 +5,7 @@ Featuring **AJAX-loaded dynamic questions**, **SweetAlert2 notifications**, and 
 
 ![Banner](./src/images/banner.png)
 
-## 🚀 Features
+## 🚀 Features 
 
 ✔ **Multiple Categories** – Practice HTML, CSS, JS and more 📚  
 ✔ **Dynamic Loading** – Questions are loaded from JSON files ⚡
